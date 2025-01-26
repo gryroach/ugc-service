@@ -1,0 +1,12 @@
+[project]
+name = "ugc-api"
+version = "0.1.0"
+description = "UGC API with MongoDB"
+requires-python = ">=3.12"
+dependencies = [
+    "beanie>=1.29.0",
+    "fastapi[standard]>=0.115.7",
+    "orjson>=3.10.15",
+    "pydantic-settings>=2.7.1",
+    "pyjwt[crypto]>=2.10.1",
+]
