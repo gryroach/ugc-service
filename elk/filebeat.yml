@@ -1,0 +1,32 @@
+filebeat.inputs:
+  - type: container
+    enabled: true
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    processors:
+      - add_docker_metadata:
+          host: "unix:///var/run/docker.sock"
+      - dissect:
+          tokenizer: "/var/lib/docker/containers/%{container_id}/%{filename}"
+          field: "log.file.path"
+          target_prefix: ""
+      - rename:
+          fields:
+            - from: "container.id"
+              to: "docker.container_id"
+            - from: "container.name"
+              to: "docker.container_name"
+      - drop_event:
+          when:
+            or:
+              - equals:
+                  docker.container_name: "filebeat"
+              - equals:
+                  docker.container_name: "logstash"
+              - equals:
+                  docker.container_name: "elasticsearch"
+              - equals:
+                  docker.container_name: "kibana"
+
+output.logstash:
+  hosts: ["logstash:5044"]

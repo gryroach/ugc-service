@@ -4,6 +4,10 @@ include .env
 run-all:
 	docker compose up -d --build
 
+# Запуск ELK контейнеров
+run-elk:
+	docker compose -f docker-compose-elk.yml up --force-recreate
+
 # Запуск API-сервиса
 run-api:
 	docker compose up -d nginx ugc-api
