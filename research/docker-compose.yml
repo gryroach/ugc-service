@@ -1,0 +1,16 @@
+version: "3.3"
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: test_db
+    ports:
+      - "15432:5432"
+  mongo:
+    image: mongo:8.0.4
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
