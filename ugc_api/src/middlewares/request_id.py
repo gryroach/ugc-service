@@ -1,5 +1,7 @@
-from typing import Callable
+# stdlib
+from collections.abc import Callable
 
+# thirdparty
 from fastapi import Request, status
 from fastapi.responses import ORJSONResponse
 

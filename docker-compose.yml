@@ -25,8 +25,7 @@ services:
     volumes:
       - ./ugc_api/src:/app/src
     depends_on:
-      mongos1:
-        condition: service_healthy
+      - mongos1
 
 
   mongors1n1:
@@ -194,42 +193,29 @@ services:
     container_name: mongos1
     image: mongo
     restart: always
+    command: mongos --configdb mongors1conf/mongocfg1:27017,mongocfg2:27017,mongocfg3:27017 --port 27017 --bind_ip_all
     expose:
       - "27017"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./mongodb/init-mongos.js:/docker-entrypoint-initdb.d/init-mongos.js
-    command: mongos --configdb mongors1conf/mongocfg1:27017,mongocfg2:27017,mongocfg3:27017 --port 27017 --bind_ip_all
-    healthcheck:
-      test: ["CMD","mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      timeout: 5s
-      retries: 3
-      start_period: 5s
     depends_on:
       - mongocfg1
       - mongocfg2
-      - mongocfg3
 
 
   mongos2:
     container_name: mongos2
     image: mongo
     restart: always
-    depends_on:
-      - mongocfg1
-      - mongocfg2
     command: mongos --configdb mongors1conf/mongocfg1:27017,mongocfg2:27017,mongocfg3:27017 --port 27017 --bind_ip_all
     expose:
       - "27017"
     volumes:
       - /etc/localtime:/etc/localtime:ro
-    healthcheck:
-      test: ["CMD","mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      timeout: 5s
-      retries: 3
-      start_period: 5s
+    depends_on:
+      - mongocfg1
+      - mongocfg2
 
 volumes:
   mongo_data1:

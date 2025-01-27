@@ -1,9 +1,12 @@
+# stdlib
 from logging import config as logging_config
 
+# thirdparty
 from dotenv import find_dotenv, load_dotenv
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# project
 from core.logger import LOGGING
 
 logging_config.dictConfig(LOGGING)
@@ -22,7 +25,6 @@ class AppSettings(BaseSettings):
     mongo_host: str = Field(default="mongos1")
     mongo_port: str = Field(default="27017")
 
-
     # Работа с токенами
     jwt_algorithm: str = Field(default="RS256")
     jwt_public_key_path: str = Field(default="/app/keys/example_public_key.pem")
@@ -40,13 +42,16 @@ class AppSettings(BaseSettings):
     @property
     def mongo_dns(self) -> str:
         if not self.mongo_user or not self.mongo_password:
-            return f"mongodb://{self.mongo_host}:{self.mongo_port}"
-        return f"mongodb://{self.mongo_user}:{self.mongo_password}@{self.mongo_host}:{self.mongo_port}"
+            return f"mongodb://{self.mongo_host}:{self.mongo_port}/{self.mongo_db}"
+        return (
+            f"mongodb://{self.mongo_user}:{self.mongo_password}@{self.mongo_host}:{self.mongo_port}/"
+            f"{self.mongo_db}?authSource=admin"
+        )
 
     @property
     def jwt_public_key(self) -> str:
         try:
-            with open(self.jwt_public_key_path, "r") as key_file:
+            with open(self.jwt_public_key_path) as key_file:
                 return key_file.read()
         except FileNotFoundError:
             raise ValueError(

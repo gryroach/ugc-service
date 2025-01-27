@@ -1,8 +1,13 @@
+# stdlib
+from collections.abc import AsyncGenerator, Mapping
 from contextlib import asynccontextmanager
+from typing import Any
 
+# thirdparty
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
+# project
 from api.v1 import api_router as api_v1_router
 from core.config import settings
 from db.mongodb import init_mongodb
@@ -11,9 +16,9 @@ from middlewares.request_id import request_id_require
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncGenerator[Mapping[str, Any]]:
     client = await init_mongodb()
-    yield
+    yield  # type: ignore
     client.close()
 
 
@@ -25,7 +30,7 @@ app = FastAPI(
     openapi_url="/api-ugc/openapi.json",
     default_response_class=ORJSONResponse,
     lifespan=lifespan,
-    exception_handlers=exception_handlers,
+    exception_handlers=exception_handlers,  # type: ignore
 )
 
 app.middleware("http")(request_id_require)

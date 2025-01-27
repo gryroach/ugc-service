@@ -1,10 +1,13 @@
+# stdlib
 import logging
 from typing import Any
 
+# thirdparty
 import jwt
 from fastapi import Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
+# project
 from core.config import settings
 from exceptions.auth_exceptions import AuthError
 
@@ -12,11 +15,11 @@ logger = logging.getLogger(__name__)
 
 
 class JWTBearer(HTTPBearer):
-    def __init__(self, auto_error: bool = True):
+    def __init__(self, auto_error: bool = True) -> None:
         super().__init__(auto_error=auto_error)
 
-    async def __call__(self, request: Request) -> dict[str, Any] | None:
-        credentials: HTTPAuthorizationCredentials = await super().__call__(request)
+    async def __call__(self, request: Request) -> dict[str, Any] | None:  # type: ignore
+        credentials: HTTPAuthorizationCredentials | None = await super().__call__(request)
         if credentials is None:
             return None
 
@@ -32,4 +35,4 @@ class JWTBearer(HTTPBearer):
                 options={"verify_exp": False},
             )
         except jwt.exceptions.PyJWTError:
-            raise AuthError
+            raise AuthError("JWT token error")
