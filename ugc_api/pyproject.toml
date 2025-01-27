@@ -1,0 +1,36 @@
+[project]
+name = "ugc-api"
+version = "0.1.0"
+description = "UGC API with MongoDB"
+requires-python = ">=3.12"
+dependencies = [
+    "beanie>=1.29.0",
+    "fastapi[standard]>=0.115.7",
+    "orjson>=3.10.15",
+    "pydantic-settings>=2.7.1",
+    "pyjwt[crypto]>=2.10.1",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "flake8>=7.1.1",
+    "isort>=5.13.2",
+    "mypy>=1.14.1",
+    "pre-commit>=4.1.0",
+    "ruff>=0.9.3",
+]
+
+[tool.ruff]
+line-length = 119
+select = ["E", "F", "YTT", "ANN", "PL", "UP"]
+ignore = ["ANN101", "ANN102", "ANN401"]
+exclude = [
+    ".venv",
+]
+target-version = "py312"
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
