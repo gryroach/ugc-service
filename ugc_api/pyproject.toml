@@ -2,7 +2,7 @@
 name = "ugc-api"
 version = "0.1.0"
 description = "UGC API with MongoDB"
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
     "beanie>=1.29.0",
     "fastapi[standard]>=0.115.7",
