@@ -1,0 +1,42 @@
+name: UGC API
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.11, 3.12, 3.13]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install "flake8>=7.1.1" "mypy>=1.14.1" "ruff>=0.9.3"
+
+    - name: Lint with flake8
+      run: |
+        flake8 --config ./ugc_api/setup.cfg
+
+    - name: Lint with ruff
+      run: |
+        ruff check --exclude research --output-format=github
+
+    - name: Lint with mypy
+      run: |
+        mypy --config-file ugc_api/pyproject.toml --exclude research .
