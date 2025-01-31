@@ -2,7 +2,7 @@
 import logging
 
 # thirdparty
-from beanie import init_beanie
+from beanie import Document, init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.errors import OperationFailure
 
@@ -15,43 +15,33 @@ from documents.review import Review
 
 logger = logging.getLogger(__name__)
 
+COLLECTIONS: list[type[Document]] = [
+    Movie,
+    Reaction,
+    Review,
+    Bookmark,
+]
+
 
 async def init_mongodb() -> AsyncIOMotorClient:
     client: AsyncIOMotorClient = AsyncIOMotorClient(settings.mongo_dns)
 
     try:
         admin_db = client.get_database("admin")
-        await admin_db.command(
-            "shardCollection",
-            f"{settings.mongo_db}.{Movie.Settings.name}",
-            key={"id": "hashed"},
-        )
-        await admin_db.command(
-            "shardCollection",
-            f"{settings.mongo_db}.{Reaction.Settings.name}",
-            key={"id": "hashed"},
-        )
-        await admin_db.command(
-            "shardCollection",
-            f"{settings.mongo_db}.{Review.Settings.name}",
-            key={"id": "hashed"},
-        )
-        await admin_db.command(
-            "shardCollection",
-            f"{settings.mongo_db}.{Bookmark.Settings.name}",
-            key={"id": "hashed"},
-        )
+        for collection in COLLECTIONS:
+            collection_name = collection.Settings.name
+            await admin_db.command(
+                "shardCollection",
+                f"{settings.mongo_db}.{collection_name}",
+                key={"id": "hashed"},
+            )
+            logger.info(f"Шардирование коллекции {collection_name} настроено.")
     except OperationFailure as e:
         logger.error(f"Ошибка настройки шардирования коллекций: {e}")
 
     await init_beanie(
         database=client.get_database(settings.mongo_db),
-        document_models=[
-            Movie,
-            Reaction,
-            Review,
-            Bookmark,
-        ],
+        document_models=COLLECTIONS,
     )
 
     return client

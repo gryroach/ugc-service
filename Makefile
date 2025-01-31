@@ -10,7 +10,7 @@ run-elk:
 
 # Запуск API-сервиса
 run-api:
-	docker compose up -d nginx ugc-api
+	docker compose up -d --build nginx ugc-api
 
 # Запуск MongoDB
 run-mongo:
