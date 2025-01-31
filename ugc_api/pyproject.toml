@@ -29,6 +29,9 @@ exclude = [
 ]
 target-version = "py312"
 
+[tool.ruff.lint.pylint]
+max-args = 7
+
 [tool.mypy]
 python_version = "3.12"
 ignore_missing_imports = true

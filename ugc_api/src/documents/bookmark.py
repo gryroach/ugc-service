@@ -7,11 +7,11 @@ from beanie import Document
 from pydantic import Field
 
 
-class Movie(Document):
+class Bookmark(Document):
     id: UUID = Field(default_factory=uuid4)  # type: ignore
-    title: str
-    rating: int = 0
+    movie_id: UUID
+    user_id: UUID
     created_at: datetime = Field(default_factory=datetime.now)
 
     class Settings:
-        name = "movies"
+        name = "bookmarks"
