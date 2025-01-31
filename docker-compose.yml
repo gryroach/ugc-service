@@ -194,6 +194,8 @@ services:
     image: mongo
     restart: always
     command: mongos --configdb mongors1conf/mongocfg1:27017,mongocfg2:27017,mongocfg3:27017 --port 27017 --bind_ip_all
+    ports:
+      - 27019:27017
     expose:
       - "27017"
     volumes:
@@ -209,6 +211,8 @@ services:
     image: mongo
     restart: always
     command: mongos --configdb mongors1conf/mongocfg1:27017,mongocfg2:27017,mongocfg3:27017 --port 27017 --bind_ip_all
+    ports:
+      - 27020:27017
     expose:
       - "27017"
     volumes:

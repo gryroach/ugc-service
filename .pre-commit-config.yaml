@@ -20,6 +20,15 @@ repos:
         require_serial: false
         additional_dependencies: []
 
+      - id: ruff_format
+        name: ruff format
+        entry: ./ugc_api/.venv/bin/ruff
+        language: python
+        types: [ python ]
+        args: [ format ]
+        require_serial: false
+        additional_dependencies: [ ]
+
       - id: flake8
         name: flake8
         entry: ./ugc_api/.venv/bin/flake8
@@ -29,14 +38,13 @@ repos:
         require_serial: false
         additional_dependencies: []
 
-      - id: ruff
-        name: ruff
+      - id: ruff_lint
+        name: ruff lint
         entry: ./ugc_api/.venv/bin/ruff
         language: python
         types: [python]
         args: [check]
         require_serial: false
-        exclude: farfor
         additional_dependencies: []
 
       - id: mypy
