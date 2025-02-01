@@ -42,7 +42,7 @@ class ReactionSortParams(BaseModel):
     description="Получение списка реакций",
     summary="Получение списка реакций",
 )
-async def get_reviews(
+async def get_reactions(
     reaction_repo: Annotated[ReactionRepository, Depends()],
     pagination_params: Annotated[PaginationParams, Depends()],
     sort_params: Annotated[ReactionSortParams, Depends()],
