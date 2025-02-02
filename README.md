@@ -67,4 +67,6 @@ docker compose exec sentry-api sentry upgrade
 
 После применения миграций переходим по адресу
 http://localhost:9000/
-оздаем проект и забираем DSN
+создаем проект и забираем DSN
+
+Перезапускаем проект
