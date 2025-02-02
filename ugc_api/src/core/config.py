@@ -1,13 +1,13 @@
 # stdlib
 from logging import config as logging_config
 
+# project
+from core.logger import LOGGING
+
 # thirdparty
 from dotenv import find_dotenv, load_dotenv
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-# project
-from core.logger import LOGGING
 
 logging_config.dictConfig(LOGGING)
 DOTENV_PATH = find_dotenv(".env")
@@ -25,9 +25,14 @@ class AppSettings(BaseSettings):
     mongo_host: str = Field(default="mongos1")
     mongo_port: str = Field(default="27017")
 
+    # Sentry
+    sentry_dsn: str = Field(default=False)
+
     # Работа с токенами
     jwt_algorithm: str = Field(default="RS256")
-    jwt_public_key_path: str = Field(default="/app/keys/example_public_key.pem")
+    jwt_public_key_path: str = Field(
+        default="/app/keys/example_public_key.pem"
+    )
 
     # Другие настройки
     test_mode: bool = Field(default=False)
@@ -54,7 +59,9 @@ class AppSettings(BaseSettings):
             with open(self.jwt_public_key_path) as key_file:
                 return key_file.read()
         except FileNotFoundError:
-            raise ValueError(f"Public key file not found at: {self.jwt_public_key_path}")
+            raise ValueError(
+                f"Public key file not found at: {self.jwt_public_key_path}"
+            )
         except Exception as e:
             raise ValueError(f"Error reading public key: {str(e)}")
 
