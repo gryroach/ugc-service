@@ -5,6 +5,7 @@ __pycache__/
 
 # Test data
 test_data.csv
+*.npy
 
 # C extensions
 *.so

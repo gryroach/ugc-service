@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  sentry-api:
+    image: sentry:latest
+    env_file:
+      - .env
+    depends_on:
+      - db-sentry
+      - redis
+    ports:
+      - "9000:9000"
+    
+  sentry-worker:
+    image: sentry:latest
+    env_file:
+      - .env
+    depends_on:
+      - db-sentry
+      - redis
+    command: sentry run worker
+    
+  sentry-cron:
+    image: sentry:latest
+    env_file:
+      - .env
+    depends_on:
+      - db-sentry
+      - redis
+    command: sentry run cron
+    
+  db-sentry:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=${SENTRY_DB_USER}
+      - POSTGRES_PASSWORD=${SENTRY_DB_PASSWORD}
+      - POSTGRES_DB=${SENTRY_DB_NAME}
+    
+  redis:
+    image: redis:latest
+    restart: always 

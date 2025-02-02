@@ -9,6 +9,7 @@ dependencies = [
     "orjson>=3.10.15",
     "pydantic-settings>=2.7.1",
     "pyjwt[crypto]>=2.10.1",
+    "sentry-sdk>=2.20.0",
 ]
 
 [tool.uv]
@@ -24,9 +25,7 @@ dev-dependencies = [
 line-length = 119
 select = ["E", "F", "YTT", "ANN", "PL", "UP"]
 ignore = ["ANN101", "ANN102", "ANN401"]
-exclude = [
-    ".venv",
-]
+exclude = [".venv"]
 target-version = "py312"
 
 [tool.ruff.lint.pylint]

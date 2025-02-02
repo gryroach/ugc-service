@@ -3,16 +3,21 @@ from collections.abc import AsyncGenerator, Mapping
 from contextlib import asynccontextmanager
 from typing import Any
 
-# thirdparty
-from fastapi import FastAPI
-from fastapi.responses import ORJSONResponse
+import sentry_sdk
 
 # project
 from api.v1 import api_router as api_v1_router
 from core.config import settings
 from db.mongodb import init_mongodb
+
+# thirdparty
+from fastapi import FastAPI
+from fastapi.responses import ORJSONResponse
 from handlers import exception_handlers
 from middlewares.request_id import request_id_require
+
+if settings.sentry_dsn:
+    sentry_sdk.init(settings.sentry_dsn)
 
 
 @asynccontextmanager
