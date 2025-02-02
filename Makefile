@@ -33,3 +33,10 @@ init-db:
 create-dbuser:
 	@echo "Creating MongoDBs user..."
 	docker compose exec mongos1 mongosh --eval 'db.getSiblingDB("admin").createUser({ user: "$(UGC_MONGO_USER)" , pwd: "$(UGC_MONGO_PASSWORD)", roles: ["userAdminAnyDatabase", "dbAdminAnyDatabase", "readWriteAnyDatabase"]})'
+
+sentry-up:
+	@echo "Sentry up..."
+	docker compose -f docker-compose-sentry.yml up -d
+	@sleep 2
+	@echo "Apply migrations..."
+	docker compose exec sentry-api sentry upgrade

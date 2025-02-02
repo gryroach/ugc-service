@@ -58,11 +58,8 @@ python tools/generate_token.py
 Для локального размещения
 
 ```bash
-# Поднимаем Sentry
-docker compose -f docker-compose-sentry.yml up -d
-# Применяем миграции
-docker compose exec sentry-api sentry upgrade
-# В ходе миграций создаем пользователя
+# Поднимаем Sentry и создаем пользователя
+make sentry-up
 ```
 
 После применения миграций переходим по адресу
