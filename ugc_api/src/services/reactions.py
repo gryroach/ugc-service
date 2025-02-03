@@ -35,7 +35,7 @@ async def update_user_reaction(
     target_id: UUID,
     content_type: ContentType,
     user_id: UUID,
-    like_value: LikeValue,
+    value: LikeValue,
     repo: RatingRepository,
 ) -> None:
     """
@@ -45,13 +45,13 @@ async def update_user_reaction(
     updated, created = await reaction_repo.upsert(
         target_id=target_id,
         content_type=content_type,
-        value=like_value,
+        value=value,
         user_id=user_id,
     )
     if created:
-        await repo.update_rating_count(target_id, like_value)
+        await repo.update_rating_count(target_id, value)
     if updated:
-        await repo.update_rating_count(target_id, like_value * 2)
+        await repo.update_rating_count(target_id, value * 2)
 
 
 async def get_movie_statistics(movie_id: UUID) -> dict[str, int]:
@@ -59,12 +59,25 @@ async def get_movie_statistics(movie_id: UUID) -> dict[str, int]:
     Получение агрегированных данных для определенного фильма.
     """
     likes_pipeline = [
-        {"$match": {"target_id": Binary.from_uuid(movie_id)}},
+        {
+            "$match": {
+                "target_id": Binary.from_uuid(movie_id),
+                "content_type": ContentType.movie,
+            }
+        },
         {
             "$group": {
                 "_id": None,
-                "likes_count": {"$sum": {"$cond": [{"$eq": ["$value", LikeValue.like]}, 1, 0]}},
-                "dislikes_count": {"$sum": {"$cond": [{"$eq": ["$value", LikeValue.dislike]}, 1, 0]}},
+                "likes_count": {
+                    "$sum": {
+                        "$cond": [{"$eq": ["$value", LikeValue.like]}, 1, 0]
+                    }
+                },
+                "dislikes_count": {
+                    "$sum": {
+                        "$cond": [{"$eq": ["$value", LikeValue.dislike]}, 1, 0]
+                    }
+                },
                 "total": {"$sum": 1},
             }
         },

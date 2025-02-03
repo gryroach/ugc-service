@@ -26,7 +26,7 @@ class AppSettings(BaseSettings):
     mongo_port: str = Field(default="27017")
 
     # Sentry
-    sentry_dsn: str = Field(default=False)
+    sentry_dsn: str | bool = Field(default=False)
 
     # Работа с токенами
     jwt_algorithm: str = Field(default="RS256")
