@@ -32,7 +32,7 @@ class UpdateReaction(CreateReaction):
 class ReactionRequest(BaseModel):
     content_type: ContentType
     target_id: UUID
-    like_value: LikeValue | None
+    value: LikeValue | None
 
 
 class ReactionResponse(BaseModel):

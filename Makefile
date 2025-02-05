@@ -40,3 +40,8 @@ sentry-up:
 	@sleep 2
 	@echo "Apply migrations..."
 	docker compose exec sentry-api sentry upgrade
+
+# Тесты
+test:
+	docker compose build ugc-api-test
+	docker compose run --rm ugc-api-test src/tests -v
