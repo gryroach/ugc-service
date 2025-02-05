@@ -44,6 +44,14 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
+    - name: Prepare test environment
+      run: |
+        cp .env.example .env
+        # Модифицируем некоторые переменные для тестового окружения
+        sed -i 's/UGC_API_PRODUCTION=True/UGC_API_PRODUCTION=False/' .env
+        sed -i 's/UGC_MONGO_DB=Movies/UGC_MONGO_DB=Movies_Test/' .env
+        sed -i 's|SENTRY_DSN=.*|SENTRY_DSN=""|' .env
+
     - name: Run tests
       run: |
         make test
