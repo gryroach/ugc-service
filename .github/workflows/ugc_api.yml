@@ -49,20 +49,18 @@ jobs:
         make test
 
     - name: Send Telegram notification
-      if: always()
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main' && success()
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_CHAT_ID }}
         token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         message: |
-          🔔 CI Pipeline Status for ${{ github.repository }}
+          ✅ Изменения успешно влиты в main!
 
-          Event: ${{ github.event_name }}
-          Branch: ${{ github.ref_name }}
+          Repository: ${{ github.repository }}
+          Branch: main
 
-          Workflow Status: ${{ job.status }}
+          Commit: ${{ github.sha }}
+          ${{ github.event.commits[0].message }}
 
-          ${{ github.event_name == 'pull_request' && format('Pull Request: #{0}', github.event.pull_request.number) || format('Commit: {0}', github.sha) }}
-          ${{ github.event.pull_request.title || github.event.commits[0].message }}
-
-          Details: ${{ github.event_name == 'pull_request' && github.event.pull_request.html_url || format('https://github.com/{0}/commit/{1}', github.repository, github.sha) }}
+          Details: https://github.com/${{ github.repository }}/commit/${{github.sha}}
