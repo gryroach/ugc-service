@@ -34,10 +34,17 @@ dev-dependencies = [
 [tool.ruff]
 line-length = 119
 target-version = "py312"
-exclude = [".venv"]
+exclude = [".venv", "research"]
 
 [tool.ruff.lint]
-select = ["E", "F", "YTT", "ANN", "PL", "UP"]
+select = [
+    "E",
+    "F",
+    "YTT",
+    "ANN",
+    "PL",
+    "UP",
+]
 ignore = ["ANN401"]
 
 [tool.ruff.lint.pylint]
