@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  lint:
+  lint-and-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -41,13 +41,28 @@ jobs:
       run: |
         mypy --config-file ugc_api/pyproject.toml --exclude research .
 
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Run tests
+      run: |
+        make test
+
     - name: Send Telegram notification
+      if: always()
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_CHAT_ID }}
         token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         message: |
-          ${{ github.actor }} created commit:
-          Commit message: ${{ github.event.commits[0].message }}
-          Repository: ${{ github.repository }}
-          See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+          🔔 CI Pipeline Status for ${{ github.repository }}
+
+          Event: ${{ github.event_name }}
+          Branch: ${{ github.ref_name }}
+
+          Workflow Status: ${{ job.status }}
+
+          ${{ github.event_name == 'pull_request' && format('Pull Request: #{0}', github.event.pull_request.number) || format('Commit: {0}', github.sha) }}
+          ${{ github.event.pull_request.title || github.event.commits[0].message }}
+
+          Details: ${{ github.event_name == 'pull_request' && github.event.pull_request.html_url || format('https://github.com/{0}/commit/{1}', github.repository, github.sha) }}
