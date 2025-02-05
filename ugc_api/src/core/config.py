@@ -23,10 +23,10 @@ class AppSettings(BaseSettings):
     mongo_user: str = Field(default="")
     mongo_password: str = Field(default="")
     mongo_host: str = Field(default="mongos1")
-    mongo_port: str = Field(default="27017")
+    mongo_port: int = Field(default=27017)
 
     # Sentry
-    sentry_dsn: str | bool = Field(default=False)
+    sentry_dsn: str = Field(default="")
 
     # Работа с токенами
     jwt_algorithm: str = Field(default="RS256")
