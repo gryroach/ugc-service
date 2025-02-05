@@ -11,8 +11,7 @@ from starlette import status
 
 # project
 from api.v1.pagination import PaginationParams
-from documents.reaction import ContentType, LikeValue
-from documents.reaction import Reaction as ReactionDocument
+from documents.reaction import ContentType, LikeValue, Reaction as ReactionDocument
 from schemas.auth import JwtToken
 from schemas.reaction import Reaction, ReactionRequest, ReactionResponse
 from services.jwt_token import JWTBearer

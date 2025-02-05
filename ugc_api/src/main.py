@@ -2,9 +2,8 @@
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
-import sentry_sdk
-
 # thirdparty
+import sentry_sdk
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 

@@ -1,3 +1,4 @@
+# stdlib
 from collections.abc import AsyncGenerator, Callable, Generator
 from contextlib import asynccontextmanager
 from datetime import datetime
@@ -5,6 +6,7 @@ from typing import Any
 from unittest.mock import AsyncMock, patch
 from uuid import UUID
 
+# thirdparty
 import beanie
 import mongomock_motor
 import pytest
@@ -12,6 +14,7 @@ from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
+# project
 from documents.bookmark import Bookmark
 from documents.movie import Movie
 from documents.reaction import Reaction

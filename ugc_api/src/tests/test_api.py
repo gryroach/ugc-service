@@ -1,8 +1,11 @@
+# stdlib
 from http import HTTPStatus
 from uuid import UUID
 
+# thirdparty
 from fastapi.testclient import TestClient
 
+# project
 from documents.bookmark import Bookmark as BookmarkDocument
 
 UNPROCESSABLE_ENTITY = 422

@@ -1,9 +1,12 @@
+# stdlib
 from collections.abc import Callable
 from http import HTTPStatus
 from uuid import UUID
 
+# thirdparty
 from fastapi.testclient import TestClient
 
+# project
 from documents.bookmark import Bookmark as BookmarkDocument
 from services.repositories.bookmarks import BookmarkRepository
 from services.repositories.movies import MovieRepository
