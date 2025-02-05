@@ -33,15 +33,15 @@ class JWTBearer(HTTPBearer):
                 jwt_token,
                 settings.jwt_public_key,
                 algorithms=[settings.jwt_algorithm],
-                options={"verify_exp": False},
+                options={'verify_exp': False},
             )
             return JwtToken(
-                user=token.get("user"),
-                session_version=token.get("session_version"),
-                iat=token.get("iat"),
-                exp=token.get("exp"),
-                role=token.get("role"),
-                type=token.get("type"),
+                user=token.get('user'),
+                session_version=token.get('session_version'),
+                iat=token.get('iat'),
+                exp=token.get('exp'),
+                role=token.get('role'),
+                type=token.get('type'),
             )
-        except (jwt.exceptions.PyJWTError, ValidationError):
-            raise AuthError("JWT token error")
+        except (jwt.exceptions.PyJWTError, ValidationError) as err:
+            raise AuthError('JWT token error') from err

@@ -56,10 +56,10 @@ class AppSettings(BaseSettings):
         try:
             with open(self.jwt_public_key_path) as key_file:
                 return key_file.read()
-        except FileNotFoundError:
-            raise ValueError(f"Public key file not found at: {self.jwt_public_key_path}")
-        except Exception as e:
-            raise ValueError(f"Error reading public key: {str(e)}")
+        except FileNotFoundError as err:
+            raise ValueError(f'Public key file not found at: {self.jwt_public_key_path}') from err
+        except Exception as err:
+            raise ValueError(f'Error reading public key: {str(err)}') from err
 
 
 settings = AppSettings()

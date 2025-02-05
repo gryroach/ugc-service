@@ -44,4 +44,4 @@ sentry-up:
 # Тесты
 test:
 	docker compose build ugc-api-test
-	docker compose run --rm ugc-api-test src/tests -v
+	docker compose run -T --rm ugc-api-test

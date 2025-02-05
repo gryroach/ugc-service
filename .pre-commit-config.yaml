@@ -13,8 +13,13 @@ repos:
     rev: 7.1.1
     hooks:
       - id: flake8
-        additional_dependencies: [flake8-docstrings]
+        additional_dependencies: [
+          "flake8-bugbear>=24.2.6",
+          "flake8-docstrings>=1.7.0",
+          "flake8-quotes>=3.4.0",
+        ]
         exclude: research/
+        args: [--config=./ugc_api/setup.cfg, --statistics, --count, --show-source]
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
@@ -24,10 +29,23 @@ repos:
     rev: v0.3.4
     hooks:
       - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
-        exclude: research/
+        args: [--fix, --exit-non-zero-on-fix, --exclude, research, --output-format=github]
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.9.0
     hooks:
       - id: mypy
-        exclude: research/
+        name: mypy
+        entry: mypy
+        language: system
+        types: [python]
+        require_serial: true
+        exclude: ^research/
+        args: [--config-file, ugc_api/pyproject.toml, --exclude, research, --explicit-package-bases]
+  - repo: local
+    hooks:
+      - id: docker-test
+        name: Run tests in Docker
+        entry: make test
+        language: system
+        pass_filenames: false
+        always_run: true
