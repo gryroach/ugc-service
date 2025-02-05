@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  lint:
+  lint-and-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -41,13 +41,34 @@ jobs:
       run: |
         mypy --config-file ugc_api/pyproject.toml --exclude research .
 
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Prepare test environment
+      run: |
+        cp .env.example .env
+        # Модифицируем некоторые переменные для тестового окружения
+        sed -i 's/UGC_API_PRODUCTION=True/UGC_API_PRODUCTION=False/' .env
+        sed -i 's/UGC_MONGO_DB=Movies/UGC_MONGO_DB=Movies_Test/' .env
+        sed -i 's|SENTRY_DSN=.*|SENTRY_DSN=""|' .env
+
+    - name: Run tests
+      run: |
+        make test
+
     - name: Send Telegram notification
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main' && success()
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_CHAT_ID }}
         token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         message: |
-          ${{ github.actor }} created commit:
-          Commit message: ${{ github.event.commits[0].message }}
+          ✅ Изменения успешно влиты в main!
+
           Repository: ${{ github.repository }}
-          See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+          Branch: main
+
+          Commit: ${{ github.sha }}
+          ${{ github.event.commits[0].message }}
+
+          Details: https://github.com/${{ github.repository }}/commit/${{github.sha}}
