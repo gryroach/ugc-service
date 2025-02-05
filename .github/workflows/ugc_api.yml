@@ -27,11 +27,12 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip setuptools wheel
-        pip install "flake8>=7.1.1" "mypy>=1.14.1" "ruff>=0.9.3"
+        pip install "flake8>=7.1.1" "flake8-bugbear>=24.2.6" "flake8-docstrings>=1.7.0" "flake8-quotes>=3.4.0" "mypy>=1.14.1" "ruff>=0.9.3"
 
     - name: Lint with flake8
       run: |
-        flake8 --config ./ugc_api/setup.cfg
+        # Запускаем flake8 с выводом статистики
+        flake8 --config ./ugc_api/setup.cfg --statistics --count --show-source
 
     - name: Lint with ruff
       run: |
