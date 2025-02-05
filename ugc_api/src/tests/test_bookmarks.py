@@ -2,8 +2,9 @@ from collections.abc import Callable
 from http import HTTPStatus
 from uuid import UUID
 
-from documents.bookmark import Bookmark as BookmarkDocument
 from fastapi.testclient import TestClient
+
+from documents.bookmark import Bookmark as BookmarkDocument
 from services.repositories.bookmarks import BookmarkRepository
 from services.repositories.movies import MovieRepository
 
@@ -31,9 +32,7 @@ def test_create_bookmark(
     assert data["movie_id"] == MOVIE_ID
     assert "created_at" in data
 
-    bookmark = BookmarkDocument.find_one(
-        {"movie_id": UUID(MOVIE_ID), "user_id": UUID(USER_ID)}
-    )
+    bookmark = BookmarkDocument.find_one({"movie_id": UUID(MOVIE_ID), "user_id": UUID(USER_ID)})
     assert bookmark is not None
 
 

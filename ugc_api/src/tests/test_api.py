@@ -1,8 +1,9 @@
 from http import HTTPStatus
 from uuid import UUID
 
-from documents.bookmark import Bookmark as BookmarkDocument
 from fastapi.testclient import TestClient
+
+from documents.bookmark import Bookmark as BookmarkDocument
 
 UNPROCESSABLE_ENTITY = 422
 
@@ -35,7 +36,5 @@ def test_create_bookmark(client: TestClient, headers: dict[str, str]) -> None:
     assert data["movie_id"] == movie_id
     assert "created_at" in data
 
-    bookmark = BookmarkDocument.find_one(
-        {"movie_id": UUID(movie_id), "user_id": UUID(user_id)}
-    )
+    bookmark = BookmarkDocument.find_one({"movie_id": UUID(movie_id), "user_id": UUID(user_id)})
     assert bookmark is not None

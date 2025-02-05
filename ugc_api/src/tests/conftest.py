@@ -8,14 +8,16 @@ from uuid import UUID
 import beanie
 import mongomock_motor
 import pytest
+from fastapi import FastAPI, Request
+from fastapi.testclient import TestClient
+from motor.motor_asyncio import AsyncIOMotorDatabase
+
 from documents.bookmark import Bookmark
 from documents.movie import Movie
 from documents.reaction import Reaction
 from documents.review import Review
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
 from main import app
-from motor.motor_asyncio import AsyncIOMotorDatabase
+from schemas.bookmark import CreateBookmark
 from services.repositories.bookmarks import BookmarkRepository
 from services.repositories.movies import MovieRepository
 
@@ -27,9 +29,7 @@ async def mock_mongodb() -> AsyncGenerator[AsyncIOMotorDatabase, None]:
     client = mongomock_motor.AsyncMongoMockClient()
     db = client.get_database("test_db")
 
-    await beanie.init_beanie(
-        database=db, document_models=[Bookmark, Movie, Review, Reaction]
-    )
+    await beanie.init_beanie(database=db, document_models=[Bookmark, Movie, Review, Reaction])
 
     movie = Movie(
         id=UUID("22222222-2222-2222-2222-222222222222"),
@@ -85,16 +85,12 @@ def mock_jwt_bearer() -> Generator[AsyncMock, None, None]:
 
     with patch("services.jwt_token.JWTBearer.__call__") as mock:
 
-        async def get_token_payload(request: FastAPI.Request) -> TokenPayload:
+        async def get_token_payload(request: Request) -> TokenPayload:
             token = request.headers["Authorization"].split()[1]
             if token == "test_token":
-                return TokenPayload(
-                    UUID("11111111-1111-1111-1111-111111111111")
-                )
+                return TokenPayload(UUID("11111111-1111-1111-1111-111111111111"))
             elif "33333333-3333-3333-3333-333333333333" in token:
-                return TokenPayload(
-                    UUID("33333333-3333-3333-3333-333333333333")
-                )
+                return TokenPayload(UUID("33333333-3333-3333-3333-333333333333"))
             return TokenPayload(UUID("11111111-1111-1111-1111-111111111111"))
 
         mock.side_effect = get_token_payload
@@ -121,8 +117,8 @@ def mock_bookmark_repo(
         def __init__(self) -> None:
             super().__init__()
 
-        async def get_or_create(self, create_bookmark: dict) -> Bookmark:
-            result = Bookmark.parse_obj(mock_bookmark_doc.return_value)
+        async def get_or_create(self, create_bookmark: CreateBookmark) -> Bookmark:
+            result = Bookmark.parse_obj(mock_bookmark_doc.model_dump.return_value)
             return result
 
     def get_repo() -> BookmarkRepository:
@@ -137,9 +133,7 @@ def mock_movie_repo() -> Callable[[], MovieRepository]:
         def __init__(self) -> None:
             super().__init__()
 
-        async def get(
-            self, document_id: UUID, filters: dict[Any, Any] | None = None
-        ) -> Movie:
+        async def get(self, document_id: UUID, filters: dict[Any, Any] | None = None) -> Movie:
             result = {
                 "id": str(document_id),
                 "title": "Test Movie",
@@ -160,7 +154,7 @@ async def client(
     mock_jwt_bearer: AsyncMock,
     mock_bookmark_repo: Callable[[], BookmarkRepository],
     mock_movie_repo: Callable[[], MovieRepository],
-) -> TestClient:
+) -> AsyncGenerator[TestClient, None]:
     app.dependency_overrides.clear()
 
     @asynccontextmanager

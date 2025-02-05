@@ -4,17 +4,15 @@ from uuid import UUID, uuid4
 
 # thirdparty
 from bson import Binary
+from pymongo.results import UpdateResult
 
 # project
 from documents.reaction import ContentType, LikeValue, Reaction
-from pymongo.results import UpdateResult
 from schemas.reaction import CreateReaction, UpdateReaction
 from services.repositories.base import BaseRepository
 
 
-class ReactionRepository(
-    BaseRepository[Reaction, CreateReaction, UpdateReaction]
-):
+class ReactionRepository(BaseRepository[Reaction, CreateReaction, UpdateReaction]):
     def __init__(self) -> None:
         super().__init__(Reaction)
 
@@ -38,9 +36,7 @@ class ReactionRepository(
         if existing_record and existing_record.get("value") == value:
             return False, False
 
-        result: (
-            UpdateResult
-        ) = await Reaction.get_motor_collection().update_one(
+        result: UpdateResult = await Reaction.get_motor_collection().update_one(
             {
                 "content_type": content_type,
                 "target_id": Binary.from_uuid(target_id),

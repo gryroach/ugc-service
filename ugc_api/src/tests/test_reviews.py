@@ -2,6 +2,7 @@ from collections.abc import Callable
 from http import HTTPStatus
 
 from fastapi.testclient import TestClient
+
 from services.repositories.movies import MovieRepository
 
 MOVIE_ID = "22222222-2222-2222-2222-222222222222"
