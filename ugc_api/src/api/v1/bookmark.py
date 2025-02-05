@@ -13,12 +13,7 @@ from starlette import status
 from api.v1.pagination import PaginationParams
 from documents.bookmark import Bookmark as BookmarkDocument
 from schemas.auth import JwtToken
-from schemas.bookmark import (
-    Bookmark,
-    BookmarkCreateRequest,
-    BookmarkCreateResponse,
-    CreateBookmark,
-)
+from schemas.bookmark import Bookmark, BookmarkCreateRequest, BookmarkCreateResponse, CreateBookmark
 from services.jwt_token import JWTBearer
 from services.repositories.bookmarks import BookmarkRepository
 from services.repositories.movies import MovieRepository

@@ -43,5 +43,5 @@ class JWTBearer(HTTPBearer):
                 role=token.get("role"),
                 type=token.get("type"),
             )
-        except (jwt.exceptions.PyJWTError, ValidationError):
-            raise AuthError("JWT token error")
+        except (jwt.exceptions.PyJWTError, ValidationError) as err:
+            raise AuthError("JWT token error") from err

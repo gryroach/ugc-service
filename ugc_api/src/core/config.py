@@ -23,10 +23,10 @@ class AppSettings(BaseSettings):
     mongo_user: str = Field(default="")
     mongo_password: str = Field(default="")
     mongo_host: str = Field(default="mongos1")
-    mongo_port: str = Field(default="27017")
+    mongo_port: int = Field(default=27017)
 
     # Sentry
-    sentry_dsn: str | bool = Field(default=False)
+    sentry_dsn: str = Field(default="")
 
     # Работа с токенами
     jwt_algorithm: str = Field(default="RS256")
@@ -56,10 +56,10 @@ class AppSettings(BaseSettings):
         try:
             with open(self.jwt_public_key_path) as key_file:
                 return key_file.read()
-        except FileNotFoundError:
-            raise ValueError(f"Public key file not found at: {self.jwt_public_key_path}")
-        except Exception as e:
-            raise ValueError(f"Error reading public key: {str(e)}")
+        except FileNotFoundError as err:
+            raise ValueError(f"Public key file not found at: {self.jwt_public_key_path}") from err
+        except Exception as err:
+            raise ValueError(f"Error reading public key: {str(err)}") from err
 
 
 settings = AppSettings()

@@ -68,16 +68,8 @@ async def get_movie_statistics(movie_id: UUID) -> dict[str, int]:
         {
             "$group": {
                 "_id": None,
-                "likes_count": {
-                    "$sum": {
-                        "$cond": [{"$eq": ["$value", LikeValue.like]}, 1, 0]
-                    }
-                },
-                "dislikes_count": {
-                    "$sum": {
-                        "$cond": [{"$eq": ["$value", LikeValue.dislike]}, 1, 0]
-                    }
-                },
+                "likes_count": {"$sum": {"$cond": [{"$eq": ["$value", LikeValue.like]}, 1, 0]}},
+                "dislikes_count": {"$sum": {"$cond": [{"$eq": ["$value", LikeValue.dislike]}, 1, 0]}},
                 "total": {"$sum": 1},
             }
         },
